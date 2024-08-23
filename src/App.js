@@ -8,8 +8,8 @@ import productImage5 from './components/5.jpg';
 import productImage6 from './components/6.jpg'; 
 import { FaShoppingCart } from "react-icons/fa";
 
-
 const initialState = { items: [], totalAmount: 0 };
+
 function reducer(state, action) {
   switch (action.type) {
     case 'ADD_ITEM':
@@ -55,8 +55,6 @@ const products = [
   { id: 4, name: 'Penn State SweatShirt', price: 30, image: productImage4 },
   { id: 5, name: 'Graphic acidwash Tshirt', price: 30, image: productImage5 },
   { id: 6, name: 'Striped sweatshirt oversized', price: 30, image: productImage6 },
-  
-
 ];
 
 function App() {
@@ -75,16 +73,20 @@ function App() {
     dispatch({ type: 'UPDATE_QUANTITY', payload: { id, quantity } });
   };
 
+  // Calculate the total quantity of items in the cart
+  const totalQuantity = state.items.reduce((sum, item) => sum + item.quantity, 0);
+
   return (
     <div className="app">
       <header className="header">
         <h1>Shein.IN</h1>
         <button className="cart-toggle" onClick={() => setCartVisible(prev => !prev)}>
-        <FaShoppingCart />
+          <FaShoppingCart />
+          {totalQuantity > 0 && <span className="item-count">{totalQuantity}</span>}
         </button>
       </header>
       <div><h2>Best Selling Tshirts!!!</h2></div>
-         <main className="main-content">
+      <main className="main-content">
         <section className="product-list">
           {products.map(product => (
             <div key={product.id} className="product-card">
@@ -103,8 +105,7 @@ function App() {
               {state.items.map(item => (
                 <li key={item.id} className="cart-item">
                   <img src={item.image} alt={item.name} className="cart-item-image" />
-                  
-                {item.name} - ${item.price} x {item.quantity}
+                  {item.name} - ${item.price} x {item.quantity}
                   <button onClick={() => removeItem(item.id)}>Remove</button>
                   <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
                   <button onClick={() => updateQuantity(item.id, Math.max(item.quantity - 1, 1))}>-</button>
@@ -113,7 +114,7 @@ function App() {
             </ul>
             <h3>Total Amount: ${state.totalAmount.toFixed(2)}</h3>
             <label>Address</label><br/>
-            <textarea placeholder='Enter Address' rows={8} cols={36}></textarea><br></br>
+            <textarea placeholder='Enter Address' rows={8} cols={36}></textarea><br />
             <button>Pay Now</button>
             <button>Pay on Delivery</button>
           </aside>
